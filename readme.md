@@ -109,4 +109,35 @@ docker container exec -i it container_id atau container_name /bin/bash
 	- docker container create --name my-mongo --mount "type=volume, source=mongodata, destination=/data/db" --publish 27019:27017 mongo:latest
 	
 
+### Backup VOlume
+- Matikan container yg menggunakan volume yang akan kita backup
+- BUat container baru dengan dua mount, volume yg ingin kita backup dan bind mount folder dari sistem host
+- Lakukan backup dengan archive isi volume dan siman di bind mount folder
+
+  
+docker container stop my-mongo
+
+docker container create --name nginxbackup --mount "type=bind,source=/Users/fikri/learn-docker/backup,destination=/backup" --mount "type=volume,source=mongodata,destination=/data" nginx:latest
+
+docker container start nginxbackup
+
+docker container exec -i -t nginxbackup /bin/bash
+
+tar cvf /backup/backup.tar.gz /data
+
+docker container stop nginxbackup
+
+docker container rm nginxbackup
+
+docker container start my-mongo
+
+docker image pull ubuntu:latest
+
+docker container stop my-mongo
+
+
+#### Backup dengan container run
+docker container run --rm --name ubuntubackup --mount "type=bind,source=/Users/khannedy/Developments/YOUTUBE/belajar-docker-dasar/backup,destination=/backup" --mount "type=volume,source=mongodata,destination=/data" ubuntu:latest tar cvf /backup/backup-lagi.tar.gz /data
+
+docker container start my-mongo
   
