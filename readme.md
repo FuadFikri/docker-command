@@ -141,3 +141,32 @@ docker container run --rm --name ubuntubackup --mount "type=bind,source=/Users/k
 
 docker container start my-mongo
   
+  
+### Docker Network
+- komunikasi antar container di network
+
+#### Network driver
+- bridge : membuat network secara virtual yg memungkinkan container yang terkoneksi di bridge network dapat saling berkomunikasi
+- host : membuat network yang sama dengan sistem host. hanya berjalan di docker Linux
+- none : default. membuat network tidak dapat berkomunikasi
+
+#### Melihat daftar network
+docker network ls
+
+#### Membuat network
+docker network create --driver nama_driver nama_network
+
+#### hapus netweork
+- bisa dihapus jjika tidak digunakan container
+docker network rm nama_network
+
+
+### Container Network
+- Container yang terdapat di dalam network yang sama bisa saling berkomunikasi (tergantung jenis driver)
+- Container bisa mengakses container lain dengan menyebutkan hostname dari containernya, yaitu nama containernya
+
+#### Membbuat Container dengan network
+docker container create --name mongodbku --network mongonetwork --env MONGO_INITDB_ROOT_USERNAME=fikri --env MONGO_INITDB_ROOT_PASSWORD=fikri123 mongo:latest
+
+
+docker container create --name mongodbexpress --network mongonetwork --publish 8081:8081 --env ME_CONFIG_MONGODB_URL="mongodb://fikri:fikri123@mongodbku:27017/" mongo-express:latest
